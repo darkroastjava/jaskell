@@ -19,6 +19,7 @@ data MiniWert = Num Integer
 --"((P13)(M12)4)"
 --"=v5(Pvv)"
 --"=dFpq{(Mp2)}(d30)" ~> Num 6
+--"=dFpq{(Mp=tFxy{2}(t00))}(d30)" ~> Num 6
 
 call Plus (Num m) (Num n) = Num (m+n)
 call Mult (Num m) (Num n) = Num (m*n)
@@ -33,6 +34,10 @@ assoc key ((var,val):ctx) =
   if (key == var) then val else assoc key ctx
 
 parsecurly ('}':cs) = ("", cs)
+
+parsecurly ('{':cs) = ('{':prog1 ++ "}" ++ prog2, csfinal)
+  where (prog1, cs') = parsecurly cs
+        (prog2, csfinal) = parsecurly cs'
 
 parsecurly (c:cs) = (c:prog, csfinal)
   where (prog, csfinal) = parsecurly cs
