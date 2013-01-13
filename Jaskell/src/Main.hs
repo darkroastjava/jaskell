@@ -8,7 +8,7 @@ import Data.Char
 data MiniWert = Num Integer
   | Plus
   | Mult
-  | Func Char Char [(Char, MiniWert)] String
+  | Func Char Char [(Char, MiniWert)] [Char] String
   deriving Show
 
 --"2"
@@ -23,8 +23,13 @@ data MiniWert = Num Integer
 
 call Plus (Num m) (Num n) = Num (m+n)
 call Mult (Num m) (Num n) = Num (m*n)
-call (Func p q env prog) x y = res 
-  where (res, "") = parseval prog ((p,x):(q,y):env)
+call f x y = 
+  call' f
+  where
+    call' (Func p q env names prog) = res 
+      where  
+        (res, "") = 
+          parseval prog ((p,x):(q,y):(map (\name -> (name,f)) names) ++ env)
 
 -- assoc :: (Eq a) => a -> [(a, t)] -> t
 
@@ -44,7 +49,7 @@ parsecurly (c:cs) = (c:prog, csfinal)
 
 parseval :: [Char] -> [(Char, MiniWert)] -> (MiniWert, [Char])
 
-parseval ('F':p:q:'{':cs) ctx = (Func p q ctx prog, csfinal)
+parseval ('F':p:q:'{':cs) ctx = (Func p q ctx [] prog, csfinal)
   where (prog,csfinal) = parsecurly cs
 
 parseval ('(':cs) ctx = (call arg1 arg2 arg3, csfinal)
@@ -52,8 +57,12 @@ parseval ('(':cs) ctx = (call arg1 arg2 arg3, csfinal)
         (arg2,cs'') = parseval cs' ctx
         (arg3,')':csfinal) = parseval cs'' ctx
 
-parseval ('=':var:cs) ctx = parseval cs' ((var,val):ctx)
+parseval ('=':var:cs) ctx = parseval cs' ((var,valfinal):ctx)
   where (val,cs') = parseval cs ctx
+        valfinal = amend val
+          where
+            amend (Func p q env names prog) = (Func p q env (var:names) prog)
+            amend val = val
 
 parseval ('P':cs) ctx = (Plus, cs)
 parseval ('M':cs) ctx = (Mult, cs)
