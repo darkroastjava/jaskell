@@ -21,10 +21,10 @@ data MiniWert = Num Integer
 --"=dFpq{(Mp2)}(d30)" ~> Num 6
 --"=dFpq{(Mp=tFxy{2}(t00))}(d30)" ~> Num 6
 
-call Plus (Num m) (Num n) ctx = Num (m+n)
-call Mult (Num m) (Num n) ctx = Num (m*n)
-call (Func p q closure prog) x y ctx = res 
-  where (res, "") = parseval prog ((p,x):(q,y):(closure ++ ctx))
+call Plus (Num m) (Num n) = Num (m+n)
+call Mult (Num m) (Num n) = Num (m*n)
+call (Func p q closure prog) x y = res 
+  where (res, "") = parseval prog ((p,x):(q,y):closure)
 
 -- assoc :: (Eq a) => a -> [(a, t)] -> t
 
@@ -47,7 +47,7 @@ parseval :: [Char] -> [(Char, MiniWert)] -> (MiniWert, [Char])
 parseval ('F':p:q:'{':cs) ctx = (Func p q ctx prog, csfinal)
   where (prog,csfinal) = parsecurly cs
 
-parseval ('(':cs) ctx = (call arg1 arg2 arg3 ctx, csfinal)
+parseval ('(':cs) ctx = (call arg1 arg2 arg3, csfinal)
   where (arg1,cs') = parseval cs ctx
         (arg2,cs'') = parseval cs' ctx
         (arg3,')':csfinal) = parseval cs'' ctx
