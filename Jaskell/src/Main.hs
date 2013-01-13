@@ -31,16 +31,26 @@ input = "P56"
 call Plus (Num m) (Num n) = Num (m+n)
 call Mult (Num m) (Num n) = Num (m*n)
 
-parseval ('(':cs) = (call arg1 arg2 arg3, csfinal)
-  where (arg1,cs') = parseval cs
-        (arg2,cs'') = parseval cs'
-        (arg3,')':csfinal) = parseval cs''
-        
-parseval ('P':cs) = (Plus, cs)
-parseval ('M':cs) = (Mult, cs)
+assoc key [] = error "Key not found in context"
 
-parseval (c:cs) = 
+assoc key ((var,val):ctx) = 
+  if (key == var) then val else assoc key ctx
+
+
+parseval ('(':cs) ctx = (call arg1 arg2 arg3, csfinal)
+  where (arg1,cs') = parseval cs ctx
+        (arg2,cs'') = parseval cs' ctx
+        (arg3,')':csfinal) = parseval cs'' ctx
+
+parseval ('=':var:cs) ctx = parseval cs' ((var,val):ctx)
+  where (val,cs') = parseval cs ctx
+
+parseval ('P':cs) ctx = (Plus, cs)
+parseval ('M':cs) ctx = (Mult, cs)
+
+parseval (c:cs) ctx = 
   if (c <= '9')&&(c >= '0') then
     (Num (toInteger ((ord c) - (ord '0'))), cs)
   else
-    error "unknown"
+    (assoc c ctx,cs)
+
