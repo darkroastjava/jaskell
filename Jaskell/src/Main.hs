@@ -8,7 +8,7 @@ import Data.Char
 data MiniWert = Num Integer
   | Plus
   | Mult
-  | Func Char Char String
+  | Func Char Char [(Char, MiniWert)] String
   deriving Show
 
 --"2"
@@ -23,8 +23,8 @@ data MiniWert = Num Integer
 
 call Plus (Num m) (Num n) ctx = Num (m+n)
 call Mult (Num m) (Num n) ctx = Num (m*n)
-call (Func p q prog) x y ctx = res 
-  where (res, "") = parseval prog ((p,x):(q,y):ctx)
+call (Func p q closure prog) x y ctx = res 
+  where (res, "") = parseval prog ((p,x):(q,y):(closure ++ ctx))
 
 -- assoc :: (Eq a) => a -> [(a, t)] -> t
 
@@ -44,7 +44,7 @@ parsecurly (c:cs) = (c:prog, csfinal)
 
 parseval :: [Char] -> [(Char, MiniWert)] -> (MiniWert, [Char])
 
-parseval ('F':p:q:'{':cs) ctx = (Func p q prog, csfinal)
+parseval ('F':p:q:'{':cs) ctx = (Func p q ctx prog, csfinal)
   where (prog,csfinal) = parsecurly cs
 
 parseval ('(':cs) ctx = (call arg1 arg2 arg3 ctx, csfinal)
