@@ -58,6 +58,9 @@ parseval ('=':var:cs) ctx = parseval cs' ((var,val):ctx)
 parseval ('P':cs) ctx = (Plus, cs)
 parseval ('M':cs) ctx = (Mult, cs)
 
+parseval (' ':cs) ctx = parseval cs ctx
+parseval ('\n':cs) ctx = parseval cs ctx
+
 parseval (c:cs) ctx = 
   if (c <= '9')&&(c >= '0') then
     (Num (toInteger ((ord c) - (ord '0'))), cs)
