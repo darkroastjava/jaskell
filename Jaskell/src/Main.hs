@@ -16,15 +16,24 @@ data MiniProgram = Lit Integer
 --"(PMM)"
 --"(234)"
 --"(P(P13)(M12))"
+--"((P13)(M12)4)"
 
 input = "P56"
 
-parse ('P':c1:c2:[]) = App2 Plus (parse [c1]) (parse [c2])
-parse (
 
-parse [c] = 
+--parse ('P':c1:c2:[]) = App2 Plus (parse [c1]) (parse [c2])
+
+parse ('(':cs) = (App2 arg1 arg2 arg3, csfinal)
+  where (arg1,cs') = parse cs
+        (arg2,cs'') = parse cs'
+        (arg3,')':csfinal) = parse cs''
+        
+parse ('P':cs) = (Plus, cs)
+parse ('M':cs) = (Mult, cs)
+
+parse (c:cs) = 
   if (c <= '9')&&(c >= '0') then
-    Lit (toInteger ((ord c) - (ord '0')))
+    (Lit (toInteger ((ord c) - (ord '0'))), cs)
   else
     error "unknown"
 
