@@ -11,11 +11,16 @@ data MiniProgram = Lit Integer
   | App2 MiniProgram MiniProgram MiniProgram 
   deriving Show
 
---"PP13M12"
+--"2"
+--"P"
+--"(PMM)"
+--"(234)"
+--"(P(P13)(M12))"
 
 input = "P56"
 
 parse ('P':c1:c2:[]) = App2 Plus (parse [c1]) (parse [c2])
+parse (
 
 parse [c] = 
   if (c <= '9')&&(c >= '0') then
