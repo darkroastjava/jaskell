@@ -36,6 +36,7 @@ assoc key [] = error "Key not found in context"
 assoc key ((var,val):ctx) = 
   if (key == var) then val else assoc key ctx
 
+parseval :: [Char] -> [(Char, MiniWert)] -> (MiniWert, [Char])
 
 parseval ('(':cs) ctx = (call arg1 arg2 arg3, csfinal)
   where (arg1,cs') = parseval cs ctx
