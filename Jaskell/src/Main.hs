@@ -40,6 +40,8 @@ assoc key ((var,val):ctx) =
 
 parsecurly ('}':cs) = ("", cs)
 
+parsecurly (' ':cs) = parsecurly cs
+
 parsecurly ('{':cs) = ('{':subprog ++ '}':progrest, csfinal)
   where (subprog, cs') = parsecurly cs
         (progrest, csfinal) = parsecurly cs'
