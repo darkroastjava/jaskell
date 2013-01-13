@@ -23,8 +23,8 @@ data MiniWert = Num Integer
 
 call Plus (Num m) (Num n) = Num (m+n)
 call Mult (Num m) (Num n) = Num (m*n)
-call (Func p q closure prog) x y = res 
-  where (res, "") = parseval prog ((p,x):(q,y):closure)
+call (Func p q env prog) x y = res 
+  where (res, "") = parseval prog ((p,x):(q,y):env)
 
 -- assoc :: (Eq a) => a -> [(a, t)] -> t
 
