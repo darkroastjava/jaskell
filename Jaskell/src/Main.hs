@@ -17,6 +17,7 @@ data MiniProgram = Lit Integer
 --"(234)"
 --"(P(P13)(M12))"
 --"((P13)(M12)4)"
+--"=v5(Pvv)"
 
 input = "P56"
 
