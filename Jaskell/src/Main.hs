@@ -1,7 +1,7 @@
 module Main where
 
 import Data.Char
-
+import Debug.Trace
  
 -- +, *, 0.., App
 
@@ -29,7 +29,7 @@ call f x y =
     call' (Func p q env names prog) = res 
       where  
         (res, "") = 
-          parseval prog ((p,x):(q,y):(map (\name -> (name,f)) names) ++ env)
+          traceStack ("parseval with: "++(show x)) (parseval prog ((p,x):(q,y):(map (\name -> (name,f)) names) ++ env))
 
 -- assoc :: (Eq a) => a -> [(a, t)] -> t
 
@@ -78,3 +78,4 @@ parseval (c:cs) ctx =
   else
     (assoc c ctx,cs)
 
+main = print (parseval "(=g=fFx_{ (g (Px1) _) }fg 1 _)" [])
