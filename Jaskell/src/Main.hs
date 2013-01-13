@@ -22,7 +22,8 @@ data MiniWert = Num Integer
 
 call Plus (Num m) (Num n) = Num (m+n)
 call Mult (Num m) (Num n) = Num (m*n)
-call (Func p q prog) x y = parseval prog ((p,x):(q,y):[])
+
+-- assoc :: (Eq a) => a -> [(a, t)] -> t
 
 assoc key [] = error "Key not found in context"
 
